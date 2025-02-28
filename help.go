@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/tucats/apitest/dictionary"
 )
 
 var helpText = `
-apitest - A simple JSON-driven rest API testing tool (c) Copyright 2025 Tom Cole
+apitest {{VERSION}} - A simple JSON-driven rest API testing tool (C) 2025 Tom Cole
 		  
 usage: apitest [options]
 
@@ -23,7 +25,7 @@ options:
   `
 
 func help() {
-	fmt.Println(helpText)
+	fmt.Println(dictionary.Apply(helpText))
 
 	os.Exit(0)
 }

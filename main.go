@@ -15,6 +15,8 @@ import (
 	"github.com/tucats/apitest/logging"
 )
 
+var BuildVersion = "developer build"
+
 func main() {
 	var (
 		err  error
@@ -33,6 +35,7 @@ func main() {
 	dictionary.Dictionary["SCHEME"] = "https"
 	dictionary.Dictionary["HOST"] = hostname
 	dictionary.Dictionary["PASSWORD"] = "password" // Default testing password
+	dictionary.Dictionary["VERSION"] = BuildVersion
 
 	// Scan over the commadn line arguments to set up the test environment.
 	for i := 1; i < len(os.Args); i++ {

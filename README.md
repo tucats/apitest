@@ -37,7 +37,6 @@ The command line accepts the following options:
 | --rest, -r |   | If present, display the REST request and response payloads |
 | --Verbose, -v |   | If present, does more Verbose logging of progress |
 
-  
 ## Dictionary
 
 A dictionary of key-value pairs is maintained during execution of the test. It can be

@@ -10,14 +10,21 @@ the response as well as testing JSON elements of the response body.
 
 ## Command line
 
-The tools can be explicitly built, but is most commonly executed using the `go run` command.
-The tool normally lives in a directory in the tools directory of the project, and the test
-description files are usually located in a directory `tests` within the source file directory.
+The tools can be explicitly built and executed as a command line tool. It can aslo be made
+part of a project file and run by executed using the `go run` command. For example, the too
+might reside in a sub-directory of the tools directory of the project, and the test
+description files are then located in a directory `tests` within the source file directory.
 
-An example invocation might be:
+An example invocation using `go run` might be
 
 ```sh
 go run ./tools/apitest -p tools/apitest/tests -d PASSWORD=zork
+```
+
+or, if built as a command and available via the PATH,
+
+```sh
+apitest -p tools/apitest/tests -d PASSWORD=zork
 ```
 
 The command line accepts the following options:
@@ -25,10 +32,12 @@ The command line accepts the following options:
 | Option | Value | Description |
 |:-------|:------|:------------|
 | --define, -d | key=value | Add an element to the substitution dictionary |
+| --help, -h |  | display help for the command |
 | --path, -p | file-path | the location of the test files |
 | --rest, -r |   | If present, display the REST request and response payloads |
 | --Verbose, -v |   | If present, does more Verbose logging of progress |
 
+  
 ## Dictionary
 
 A dictionary of key-value pairs is maintained during execution of the test. It can be

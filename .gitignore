@@ -12,7 +12,7 @@
 *.test
 
 # main binary
-apitest
+./apitest
 
 # go.sum file should be generated, not part of reposityro
 go.sum 

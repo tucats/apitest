@@ -9,6 +9,9 @@ import (
 	"github.com/google/uuid"
 )
 
+// Duration formats a duration into a human-readable format. This is similar to the
+// Go time.Duration.String() function, but with additional formatting controls
+// for small time intervals.
 func Duration(d time.Duration, extendedFormat bool) string {
 	if !extendedFormat {
 		return d.String()
@@ -85,9 +88,23 @@ func Duration(d time.Duration, extendedFormat bool) string {
 		result.WriteString(fmt.Sprintf("%ds", seconds))
 	}
 
-	return result.String()
+	// Adjust the duration string to be right-justified if
+	// it is six or fewer characters into a six-character
+	// field to match the duration size for small intervals.
+
+	text := result.String()
+	for len(text) < 6 {
+		text = " " + text
+	}
+
+	return text
 }
 
+// Gibberish generates a random string of gibberish characters from the given UUID.
+// The value is created by converting the 128-bit UUID value into two 64-bit integers.
+// Each is then formatted using base-32, with a character set of 32 numbers and letters
+// comprising the arabic digits and letters, but omitting the values "0", "1", "o", and "l"
+// for increased human readability.
 func Gibberish(u uuid.UUID) string {
 	var result strings.Builder
 

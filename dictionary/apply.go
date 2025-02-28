@@ -11,6 +11,9 @@ import (
 	"github.com/tucats/apitest/formats"
 )
 
+// Apply applies the substitutions to the given text from the active dictionary. The
+// result is returned as a new string with the substitutions applied. If there were
+// no substitutions made, the original text is returned.
 func Apply(text string) string {
 	subs := make(map[string]interface{})
 

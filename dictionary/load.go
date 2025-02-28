@@ -11,6 +11,7 @@ import (
 	"github.com/tucats/apitest/formats"
 )
 
+// Attempt to load a dictionary definition from an external JSON file.
 func Load(filePath string) error {
 	data, err := os.ReadFile(filePath)
 	if err != nil {

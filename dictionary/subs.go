@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+// For a given string and a substitution map, this function applies the substitutions to the string.
+// Substitutions are defined as text enclosed in double curly braces. The substitution value is looked up
+// by the corresponding value from the map. The substitution specification can include additional information
+// on how the value from the map should be formatted before injecting it into the string value.
 func HandleSubstitutionMap(text string, valueMap map[string]interface{}) string {
 	if len(valueMap) == 0 {
 		return text

@@ -27,7 +27,7 @@ The command line accepts the following options:
 | --define, -d | key=value | Add an element to the substitution dictionary |
 | --path, -p | file-path | the location of the test files |
 | --rest, -r |   | If present, display the REST request and response payloads |
-| --verbose, -v |   | If present, does more verbose logging of progress |
+| --Verbose, -v |   | If present, does more Verbose logging of progress |
 
 ## Dictionary
 
@@ -113,7 +113,7 @@ Here is an example test file. Below this is a discussion on the elemnts of the t
 
 The test object consists of four elements. Of these, only the `request` is required. The
 `description` is just a text description of the purpose of this test, and is displayed
-as part of verbose logging when tests are run.
+as part of Verbose logging when tests are run.
 
 ### request object
 

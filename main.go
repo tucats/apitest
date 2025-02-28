@@ -8,10 +8,12 @@ import (
 	"sort"
 	"strings"
 	"time"
-)
 
-var verbose = false
-var rest = false
+	"github.com/tucats/apitest/defs"
+	"github.com/tucats/apitest/dictionary"
+	"github.com/tucats/apitest/formats"
+	"github.com/tucats/apitest/logging"
+)
 
 func main() {
 	var (
@@ -28,14 +30,18 @@ func main() {
 
 	// Set up some default values for the dictionary. These can be overridden with the --define
 	// command line flag or placed in the dictionary.json file in the test directory.
-	Dictionary["SCHEME"] = "https"
-	Dictionary["HOST"] = hostname
-	Dictionary["PASSWORD"] = "password" // Default testing password
+	dictionary.Dictionary["SCHEME"] = "https"
+	dictionary.Dictionary["HOST"] = hostname
+	dictionary.Dictionary["PASSWORD"] = "password" // Default testing password
 
 	// Scan over the commadn line arguments to set up the test environment.
 	for i := 1; i < len(os.Args); i++ {
 		arg := os.Args[i]
 		switch arg {
+		case "-h", "--help":
+			help()
+			os.Exit(0)
+
 		case "-p", "--path":
 			if i+1 >= len(os.Args) {
 				exit("missing argument --path")
@@ -45,7 +51,7 @@ func main() {
 			i++
 
 		case "-r", "--rest":
-			rest = true
+			logging.Rest = true
 
 		case "-d", "--define":
 			if i+1 >= len(os.Args) {
@@ -57,12 +63,12 @@ func main() {
 				exit("invalid key=value format for --define: " + os.Args[i+1])
 			}
 
-			Dictionary[parts[0]] = parts[1]
+			dictionary.Dictionary[parts[0]] = parts[1]
 
 			i++
 
-		case "-v", "--verbose":
-			verbose = true
+		case "-v", "--Verbose":
+			logging.Verbose = true
 
 		default:
 			exit("unknown option: " + arg)
@@ -78,12 +84,12 @@ func main() {
 		exit("bad path: " + err.Error())
 	}
 
-	Dictionary["ROOT"] = rootPath
+	dictionary.Dictionary["ROOT"] = rootPath
 
 	// Run all the tests in the path
 	err = runTests(path)
 
-	if err != nil && strings.Contains(err.Error(), abortError) {
+	if err != nil && strings.Contains(err.Error(), defs.AbortError) {
 		fmt.Printf("Server testing unavailable, %v\n", err)
 
 		err = nil
@@ -94,9 +100,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	if verbose {
+	if logging.Verbose {
 		duration := time.Since(now)
-		fmt.Printf("\nTotal test duration: %v\n", FormatDuration(duration, true))
+		fmt.Printf("\nTotal test duration: %v\n", formats.Duration(duration, true))
 	}
 }
 
@@ -108,20 +114,20 @@ func exit(msg string) {
 func runTests(path string) error {
 	var duration time.Duration
 
-	if verbose {
+	if logging.Verbose {
 		fmt.Printf("Testing suite %s...\n", path)
 	}
 
 	// First, try to load any dictionary in the path location. If not found, we don't care.
-	err := LoadDictionary(filepath.Join(path, "dictionary.json"))
+	err := dictionary.Load(filepath.Join(path, "dictionary.json"))
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return err
 	}
 
 	// If the dictionary resulted in a different abort error string, update the one we
 	// test against now.
-	if text, ok := Dictionary["CONNECTION_REFUSED"]; ok {
-		abortError = text
+	if text, ok := dictionary.Dictionary["CONNECTION_REFUSED"]; ok {
+		defs.AbortError = text
 	}
 
 	// Read the contents of the tests directory.
@@ -172,20 +178,20 @@ func runTests(path string) error {
 		name := filepath.Join(path, file)
 
 		duration, err = TestFile(name)
-		if err != nil && strings.Contains(err.Error(), abortError) {
+		if err != nil && strings.Contains(err.Error(), defs.AbortError) {
 			break
 		}
 
 		pad := ""
 
-		if verbose {
+		if logging.Verbose {
 			pad = "  "
 		}
 
 		if err != nil {
 			fmt.Printf("%sFAIL       %-30s: %v\n", pad, file, err)
 		} else {
-			fmt.Printf("%sPASS       %-30s %v\n", pad, file, FormatDuration(duration, true))
+			fmt.Printf("%sPASS       %-30s %v\n", pad, file, formats.Duration(duration, true))
 		}
 	}
 

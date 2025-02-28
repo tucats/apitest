@@ -6,12 +6,17 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/tucats/apitest/defs"
+	"github.com/tucats/apitest/dictionary"
+	"github.com/tucats/apitest/logging"
+	"github.com/tucats/apitest/tester"
 )
 
 func TestFile(filename string) (time.Duration, error) {
 	var (
 		err  error
-		test Test
+		test defs.Test
 	)
 
 	// Load the test definition form the file into a Test object.
@@ -25,7 +30,7 @@ func TestFile(filename string) (time.Duration, error) {
 		return 0, err
 	}
 
-	if verbose {
+	if logging.Verbose {
 		base := filepath.Base(filename)
 		desc := ""
 
@@ -39,16 +44,16 @@ func TestFile(filename string) (time.Duration, error) {
 	return run(&test)
 }
 
-func run(test *Test) (time.Duration, error) {
+func run(test *defs.Test) (time.Duration, error) {
 	var err error
 
-	err = executeTest(test)
+	err = tester.ExecuteTest(test)
 	if err != nil {
 		return 0, err
 	}
 
 	// Save any results from the test back in the dictionary.
-	err = UpdateDictionary(test.Response.Body, test.Response.Save)
+	err = dictionary.Update(test.Response.Body, test.Response.Save)
 
 	return test.Duration, err
 }

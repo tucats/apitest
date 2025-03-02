@@ -18,13 +18,13 @@ description files are then located in a directory `tests` within the source file
 An example invocation using `go run` might be
 
 ```sh
-go run ./tools/apitest -p tools/apitest/tests -d PASSWORD=zork
+go run ./tools/apitest -d PASSWORD=zork tools/apitest/tests
 ```
 
 or, if built as a command and available via the PATH,
 
 ```sh
-apitest -p tools/apitest/tests -d PASSWORD=zork
+apitest -d PASSWORD=zork tools/apitest/tests
 ```
 
 The command line accepts the following options:
@@ -33,7 +33,6 @@ The command line accepts the following options:
 |:-------|:------|:------------|
 | --define, -d | key=value | Add an element to the substitution dictionary |
 | --help, -h |  | display help for the command |
-| --path, -p | file-path | the location of the test files |
 | --rest, -r |   | If present, display the REST request and response payloads |
 | --Verbose, -v |   | If present, does more Verbose logging of progress |
 

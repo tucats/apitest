@@ -76,7 +76,11 @@ func main() {
 			logging.Verbose = true
 
 		default:
-			exit("unknown option: " + arg)
+			if !strings.HasPrefix(arg, "-") && path == "" {
+				path = arg
+			} else {
+				exit("unknown option: " + arg)
+			}
 		}
 	}
 

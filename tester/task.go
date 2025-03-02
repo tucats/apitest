@@ -25,7 +25,7 @@ func executeTask(task defs.Task) error {
 			}
 
 			if logging.Verbose {
-				fmt.Printf("Task: deleting file: %s\n", name)
+				fmt.Printf("  Task: deleting file: %s\n", name)
 			}
 
 			err = os.Remove(name)

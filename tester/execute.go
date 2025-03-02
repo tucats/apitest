@@ -2,7 +2,6 @@ package tester
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,12 +10,14 @@ import (
 
 	"github.com/tucats/apitest/defs"
 	"github.com/tucats/apitest/dictionary"
-	"github.com/tucats/apitest/logging"
 	"gopkg.in/resty.v1"
 )
 
 func ExecuteTest(test *defs.Test) error {
-	var err error
+	var (
+		err  error
+		kind contentType = unknownContent
+	)
 
 	// Form the URL string
 	urlString := test.Request.Endpoint
@@ -43,6 +44,15 @@ func ExecuteTest(test *defs.Test) error {
 			value = dictionary.Apply(value)
 
 			r.Header.Add(key, value)
+
+			if strings.EqualFold(key, "content-type") {
+				v := strings.ToLower(value)
+				if strings.Contains(v, "json") {
+					kind = jsonContent
+				} else if strings.Contains(v, "text") {
+					kind = textContent
+				}
+			}
 		}
 	}
 
@@ -69,16 +79,7 @@ func ExecuteTest(test *defs.Test) error {
 
 	r.Body = b
 
-	if logging.Rest && len(b) > 0 {
-		var data interface{}
-
-		err = json.Unmarshal(b, &data)
-		if err == nil {
-			formatted, _ := json.MarshalIndent(data, "", "  ")
-
-			fmt.Printf("Request body:\n%s\n", formatted)
-		}
-	}
+	restLog("Request body", b, kind)
 
 	// Make the HTTP request
 	now := time.Now()
@@ -100,16 +101,20 @@ func ExecuteTest(test *defs.Test) error {
 	if len(b) > 0 {
 		test.Response.Body = string(b)
 
-		if logging.Rest && len(b) > 0 {
-			var data interface{}
+		kind = unknownContent
 
-			err = json.Unmarshal(b, &data)
-			if err == nil {
-				formatted, _ := json.MarshalIndent(data, "", "  ")
-
-				fmt.Printf("Response body:\n%s\n", formatted)
+		for key, value := range resp.Header() {
+			if strings.EqualFold(key, "content-type") {
+				v := strings.ToLower(strings.Join(value, ","))
+				if strings.Contains(v, "json") {
+					kind = jsonContent
+				} else if strings.Contains(v, "text") {
+					kind = textContent
+				}
 			}
 		}
+
+		restLog("Response body", b, kind)
 
 		err = validateTest(test)
 	}

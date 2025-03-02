@@ -17,6 +17,8 @@ import (
 
 var BuildVersion = "developer build"
 
+var testsExecuted = 0
+
 func main() {
 	var (
 		err  error
@@ -103,10 +105,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if logging.Verbose {
-		duration := time.Since(now)
-		fmt.Printf("\nTotal test duration: %v\n", formats.Duration(duration, true))
-	}
+	duration := time.Since(now)
+	fmt.Printf("\nExecuted %d tests in %v\n", testsExecuted, strings.TrimSpace(formats.Duration(duration, true)))
 }
 
 func exit(msg string) {
@@ -127,7 +127,7 @@ func runTests(path string) error {
 		return err
 	}
 
-	// If the dictionary resulted in a different abort error string, update the one we
+	// If the dictionary included in a different abort error string, update the one we
 	// test against now.
 	if text, ok := dictionary.Dictionary["CONNECTION_REFUSED"]; ok {
 		defs.AbortError = text
@@ -154,11 +154,13 @@ func runTests(path string) error {
 			continue
 		}
 
+		// If it's the reserved name "dictionary.json", skip it.
 		name := file.Name()
 		if name == "dictionary.json" {
 			continue
 		}
 
+		// If it's not a JSON file, skip it.
 		if filepath.Ext(name) != ".json" {
 			continue
 		}
@@ -166,18 +168,12 @@ func runTests(path string) error {
 		fileNames = append(fileNames, name)
 	}
 
+	// Sort all the names in alphabetical order. This ensures that tests
+	// are run in a consistent order.
 	sort.Strings(fileNames)
 
-	// For each test file that ends in ".json", run the tests.
+	// For each test file, run the tests.
 	for _, file := range fileNames {
-		if file == "dictionary.json" {
-			continue
-		}
-
-		if filepath.Ext(file) != ".json" {
-			continue
-		}
-
 		name := filepath.Join(path, file)
 
 		duration, err = TestFile(name)
@@ -196,6 +192,8 @@ func runTests(path string) error {
 		} else {
 			fmt.Printf("%sPASS       %-30s %v\n", pad, file, formats.Duration(duration, true))
 		}
+
+		testsExecuted++
 	}
 
 	return err

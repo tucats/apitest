@@ -10,6 +10,7 @@ import (
 	"github.com/tucats/apitest/defs"
 	"github.com/tucats/apitest/dictionary"
 	"github.com/tucats/apitest/logging"
+	"github.com/tucats/apitest/parser"
 	"github.com/tucats/apitest/tester"
 )
 
@@ -24,6 +25,8 @@ func TestFile(filename string) (time.Duration, error) {
 	if err != nil {
 		return 0, err
 	}
+
+	b = parser.RemoveComments(b)
 
 	err = json.Unmarshal(b, &test)
 	if err != nil {

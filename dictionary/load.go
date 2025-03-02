@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tucats/apitest/formats"
+	"github.com/tucats/apitest/parser"
 )
 
 // Attempt to load a dictionary definition from an external JSON file.
@@ -17,6 +18,8 @@ func Load(filePath string) error {
 	if err != nil {
 		return err
 	}
+
+	data = parser.RemoveComments(data)
 
 	var dictionary map[string]string
 

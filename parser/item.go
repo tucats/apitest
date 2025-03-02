@@ -33,10 +33,5 @@ func GetItem(text string, item string) ([]string, error) {
 		return nil, err
 	}
 
-	// If the item is just a "dot" it means the entire body is the result
-	if item == "." {
-		return []string{fmt.Sprintf("%v", body)}, nil
-	}
-
 	return parse(body, item)
 }

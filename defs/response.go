@@ -12,7 +12,7 @@ type ResponseObject struct {
 
 	// IF present, the body of the response must EXACTLY match this string. This is rarely used in a test
 	// and instead the Test component is used instead to express elements of the expected response when it
-	// is a JSON object.
+	// is a JSON object. This is also where the body is stored
 	Body string `json:"body"`
 
 	// This is a list of the items that should be extracted from the response body if it passes all the

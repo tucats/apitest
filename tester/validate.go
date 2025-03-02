@@ -17,10 +17,13 @@ func validateTest(test *defs.Test) error {
 		err error
 	)
 
+	if logging.Verbose {
+		fmt.Println("  Validating response tests")
+	}
 	// For each test case, validate the text.
 	for _, t := range test.Tests {
 		if logging.Verbose {
-			fmt.Printf("  Validating %s\n", t.Name)
+			fmt.Printf("    Validating %s\n", t.Name)
 		}
 
 		// Apply the dictionary to the value strings

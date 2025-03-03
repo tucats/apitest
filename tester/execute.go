@@ -93,8 +93,14 @@ func ExecuteTest(test *defs.Test) error {
 	test.Duration = time.Since(now)
 
 	// Verify that the response status code matches the expected status code
-	if resp.StatusCode() != test.Response.Status {
-		return fmt.Errorf("%s, expected status %d, got %d", test.Description, test.Response.Status, resp.StatusCode())
+	if test.Response.Status > 0 {
+		if logging.Verbose {
+			fmt.Printf("  Validating response code %d\n", test.Response.Status)
+		}
+
+		if resp.StatusCode() != test.Response.Status {
+			return fmt.Errorf("%s, expected status %d, got %d", test.Description, test.Response.Status, resp.StatusCode())
+		}
 	}
 
 	// Validate any headers in the response specfiication

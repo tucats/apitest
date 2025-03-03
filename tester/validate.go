@@ -230,6 +230,7 @@ func validateTest(test *defs.Test) error {
 			if strings.Contains(v, expect) {
 				return fmt.Errorf("%s, %s: expected '%s' to contain '%s'", test.Description, t.Name, value, t.Value)
 			}
+			
 		default:
 			return fmt.Errorf("%s, %s: invalid results comparison operator '%s'", test.Description, t.Name, t.Operator)
 		}

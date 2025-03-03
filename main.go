@@ -16,7 +16,7 @@ import (
 )
 
 var BuildVersion = "developer build"
-
+var filter string
 var testsExecuted = 0
 
 func main() {
@@ -47,6 +47,14 @@ func main() {
 			help()
 			os.Exit(0)
 
+		case "-f", "--filter":
+			if i+1 >= len(os.Args) {
+				exit("missing argument for --filter")
+			}
+
+			filter = os.Args[i+1]
+			i++
+
 		case "-p", "--path":
 			if i+1 >= len(os.Args) {
 				exit("missing argument --path")
@@ -72,7 +80,7 @@ func main() {
 
 			i++
 
-		case "-v", "--Verbose":
+		case "-v", "--verbose":
 			logging.Verbose = true
 
 		default:
@@ -167,6 +175,12 @@ func runTests(path string) error {
 		// If it's not a JSON file, skip it.
 		if filepath.Ext(name) != ".json" {
 			continue
+		}
+
+		if filter != "" {
+			if !strings.Contains(name, filter) {
+				continue
+			}
 		}
 
 		fileNames = append(fileNames, name)

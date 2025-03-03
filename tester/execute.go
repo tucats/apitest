@@ -10,6 +10,7 @@ import (
 
 	"github.com/tucats/apitest/defs"
 	"github.com/tucats/apitest/dictionary"
+	"github.com/tucats/apitest/logging"
 	"gopkg.in/resty.v1"
 )
 
@@ -94,6 +95,32 @@ func ExecuteTest(test *defs.Test) error {
 	// Verify that the response status code matches the expected status code
 	if resp.StatusCode() != test.Response.Status {
 		return fmt.Errorf("%s, expected status %d, got %d", test.Description, test.Response.Status, resp.StatusCode())
+	}
+
+	// Validate any headers in the response specfiication
+	if len(test.Response.Headers) > 0 {
+		if logging.Verbose {
+			fmt.Println("  Validating response headers")
+		}
+
+		for key, values := range test.Response.Headers {
+			for _, value := range values {
+				if logging.Verbose {
+					fmt.Printf("    Validating %s\n", key)
+				}
+
+				value = dictionary.Apply(value)
+
+				actual, ok := resp.Header()[key]
+				if !ok {
+					return fmt.Errorf("%s, expected header '%s' to be present", test.Description, key)
+				}
+
+				if !strings.Contains(strings.Join(actual, ","), value) {
+					return fmt.Errorf("%s, expected header '%s' to contain '%s', got '%s'", test.Description, key, value, strings.Join(actual, ","))
+				}
+			}
+		}
 	}
 
 	// Validate the response body if present

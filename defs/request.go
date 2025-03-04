@@ -8,7 +8,7 @@ type RequestObject struct {
 	Endpoint string `json:"endpoint"`
 
 	// Parameters is a map of the key-value parameter pairs that will be added to the URL.
-	Parameters map[string]string `json:"parameters,omitempty"`
+	Parameters map[string]string `json:"params,omitempty"`
 
 	// Headers is a map of the key-value header pairs that will be added to the request. Note
 	// that the values are expressed as an array of string values, since a given header can

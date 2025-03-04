@@ -11,6 +11,18 @@ func TestGetItem(t *testing.T) {
 		wantErr bool
 	}{
 		{
+			name: "escaped nested map of maps member",
+			text: `{ "first.one": { "user.name": "Alice", "age": 30 }, "second": { "name": "Bob", "age": 25 } }`,
+			item: "first\\.one.user\\.name",
+			want: "Alice",
+		},
+		{
+			name: "escaped nested array of maps member",
+			text: `[ { "user.name": "Alice", "age": 30 }, { "name": "Bob", "age": 25 } ]`,
+			item: "0.user\\.name",
+			want: "Alice",
+		},
+		{
 			name: "nested array of maps member",
 			text: `[ { "name": "Alice", "age": 30 }, { "name": "Bob", "age": 25 } ]`,
 			item: "0.name",

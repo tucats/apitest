@@ -19,10 +19,20 @@ func parse(body interface{}, item string) ([]string, error) {
 		return []string{fmt.Sprintf("%v", body)}, nil
 	}
 
+	item = dotQuote(item)
+
 	// Split out the item we seek plus whatever might be after it
 	parts := strings.SplitN(item, ".", 2)
 	if len(parts) == 1 {
 		parts = append(parts, ".")
+	}
+
+	for i, part := range parts {
+		if i == 0 {
+			parts[i] = dotUnquote(part, ".")
+		} else {
+			parts[i] = dotUnquote(part, "\\.")
+		}
 	}
 
 	// Determine if this is a numeric index or a name
@@ -59,4 +69,12 @@ func parse(body interface{}, item string) ([]string, error) {
 	}
 
 	return nil, fmt.Errorf("Item is not a map, item, or array: %T", item)
+}
+
+func dotQuote(s string) string {
+	return strings.ReplaceAll(s, "\\.", "$$DOT$$")
+}
+
+func dotUnquote(s string, target string) string {
+	return strings.ReplaceAll(s, "$$DOT$$", target)
 }

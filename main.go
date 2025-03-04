@@ -127,7 +127,10 @@ func exit(msg string) {
 }
 
 func runTests(path string) error {
-	var duration time.Duration
+	var (
+		duration time.Duration
+		lastErr  error
+	)
 
 	if logging.Verbose {
 		fmt.Printf("Testing suite %s...\n", path)
@@ -199,6 +202,10 @@ func runTests(path string) error {
 			break
 		}
 
+		if err != nil {
+			lastErr = err
+		}
+
 		pad := ""
 
 		if logging.Verbose {
@@ -214,5 +221,5 @@ func runTests(path string) error {
 		testsExecuted++
 	}
 
-	return err
+	return lastErr
 }

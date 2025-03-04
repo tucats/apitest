@@ -35,6 +35,16 @@ func validateTest(test *defs.Test) error {
 		}
 
 		switch t.Operator {
+		case "len", "length":
+			length, err := strconv.Atoi(expect)
+			if err != nil {
+				return err
+			}
+
+			if len(value) != length {
+				return fmt.Errorf("%s, %s: expected length to be %d, got %d", test.Description, t.Name, length, len(value))
+			}
+
 		case "exists":
 			// no action needed for "exists"
 			continue
@@ -230,7 +240,7 @@ func validateTest(test *defs.Test) error {
 			if strings.Contains(v, expect) {
 				return fmt.Errorf("%s, %s: expected '%s' to contain '%s'", test.Description, t.Name, value, t.Value)
 			}
-			
+
 		default:
 			return fmt.Errorf("%s, %s: invalid results comparison operator '%s'", test.Description, t.Name, t.Operator)
 		}

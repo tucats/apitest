@@ -42,8 +42,8 @@ func Apply(text string) string {
 		case value == "$seq":
 			value = strconv.Itoa(int(sequence.Add(1)))
 
-		case strings.HasPrefix(value, "$"):
-			envVar := os.Getenv(value[1:])
+		case strings.HasPrefix(value, "$env "):
+			envVar := os.Getenv(value[len("$env "):])
 			if envVar != "" {
 				value = envVar
 			}

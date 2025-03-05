@@ -100,6 +100,9 @@ Here is an example test file. Below this is a discussion on the elemnts of the t
     },
     "response": {
         "status": 200,
+        "headers": {
+            "Content-Type": "application/vnd.ego.logon+json"
+        },
         "save": { "API_TOKEN": "token"}
     },
     "tests": [
@@ -141,6 +144,11 @@ The `response` object indicates the required status value for the result of the 
 along with any optional values that are extracted from the response body and stored in the
 dictionary.
 
+IF the status value is greater than zero, then it must match the response value from the
+service. If headers are present, the header value must _contain_ the given string. This
+allows for simple tests for `json` as example, or a more complete test like the one
+shown above for an entire media type specification `application/vmd.ego.logon+json`.
+
 The notation for the item to save is a series of terms separated by "." characters.
 
 If the item is only a single "." then it assumes the body is a single value (string,
@@ -153,7 +161,7 @@ the first one found.
 
 Otherwise, the part is expected to be either an object key name or a
 numeric index value. So in the example above, "server.id" means to use the value "id" that is
-located within the "server" object.
+located within the "server" object. You can specify a key that contains dots by escaping them. For example, `foo.user\\.name` looks first for a key called `foo` and within it a key called `user.name`. Note the use of `\\.` to escape a single dot in the key name.
 
 ### tests object
 
@@ -179,7 +187,7 @@ notation are equals and not-equals, as described below.
 
 Otherwise, the part is expected to be either an object key name or a
 numeric index value. So in the example above, "server.id" means to use the value "id" that is
-located within the "server" object.
+located within the "server" object. You can specify a key that contains dots by escaping them. For example, `foo.user\\.name` looks first for a key called `foo` and within it a key called `user.name`. Note the use of `\\.` to escape a single dot in the key name.
 
 The operation can be one of the following:
 
@@ -188,4 +196,15 @@ The operation can be one of the following:
 | equals | The value must match the expression object |
 | not equals | the value must not match the expression object |
 | contains | the expression object must contain the value string |
-| not contains | the exprssion object must not contain teh value string |
+| not contains | the expression object must not contain teh value string |
+| gt | The expression object is greater than the value string |
+| ge | The expression object is greater than or equal to the value string |
+| lt | The expression object is less than the value string |
+| le | The expression object is less than or equal to the value string |
+| len | The expression object must be an array whose length equals the number in the value string |
+| exists | The expression object must exist. There is no test against a value |
+
+Note that for relational tests (gt, le, etc) if both the expression object and the value
+string are representations of integer values, the comparison is done numerically. That is,
+"10" is greater than "2" numerically, but "10X" is less than "2X" because they aren't 
+numeric values and so are compared as string values.

@@ -213,9 +213,9 @@ func runTests(path string) error {
 		}
 
 		if err != nil {
-			fmt.Printf("%sFAIL       %-30s: %v\n", pad, file, err)
+			fmt.Printf("%sFAIL       %-40s: %v\n", pad, file, err)
 		} else {
-			fmt.Printf("%sPASS       %-30s %v\n", pad, file, formats.Duration(duration, true))
+			fmt.Printf("%sPASS       %-40s %v\n", pad, file, formats.Duration(duration, true))
 		}
 
 		testsExecuted++

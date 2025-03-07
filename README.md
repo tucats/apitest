@@ -206,5 +206,5 @@ The operation can be one of the following:
 
 Note that for relational tests (gt, le, etc) if both the expression object and the value
 string are representations of integer values, the comparison is done numerically. That is,
-"10" is greater than "2" numerically, but "10X" is less than "2X" because they aren't 
+"10" is greater than "2" numerically, but "10X" is less than "2X" because they aren't
 numeric values and so are compared as string values.

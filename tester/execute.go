@@ -79,9 +79,12 @@ func ExecuteTest(test *defs.Test) error {
 
 	// The body is an arbitrary interface{}. We need to convert this to a string
 	// object, depending on it's type.
-	body := ""
+	var body string
 
 	switch actual := test.Request.Body.(type) {
+	case nil:
+		body = ""
+
 	case string:
 		body = actual
 
@@ -114,10 +117,12 @@ func ExecuteTest(test *defs.Test) error {
 		return fmt.Errorf("Unexpected body type: %T", actual)
 	}
 
-	b := []byte(dictionary.Apply(body))
-	r.Body = b
+	if len(body) > 0 {
+		b := []byte(dictionary.Apply(body))
+		r.Body = b
 
-	restLog("Request body", b, kind)
+		restLog("Request body", b, kind)
+	}
 
 	// Make the HTTP request
 	now := time.Now()
@@ -167,7 +172,7 @@ func ExecuteTest(test *defs.Test) error {
 	}
 
 	// Validate the response body if present
-	b = resp.Body()
+	b := resp.Body()
 	if len(b) > 0 {
 		test.Response.Body = string(b)
 

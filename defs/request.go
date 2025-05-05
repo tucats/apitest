@@ -20,7 +20,7 @@ type RequestObject struct {
 
 	// If the body of the request (which is assumed to be JSON) is easily exprssed as a string
 	// it can be in this field. The string must be properly escaped JSON.
-	Body string `json:"body,omitempty"`
+	Body interface{} `json:"body,omitempty"`
 
 	// If the request Body field is empty and the File field is not, the contents of the file
 	// expressed by this file path will be used as the request body. The contents of the file

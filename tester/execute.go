@@ -2,6 +2,7 @@ package tester
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -76,8 +77,44 @@ func ExecuteTest(test *defs.Test) error {
 		test.Request.Body = string(data)
 	}
 
-	b := []byte(dictionary.Apply(test.Request.Body))
+	// The body is an arbitrary interface{}. We need to convert this to a string
+	// object, depending on it's type.
+	body := ""
 
+	switch actual := test.Request.Body.(type) {
+	case string:
+		body = actual
+
+	case int:
+		body = fmt.Sprintf("%d", actual)
+
+	case float64:
+		body = fmt.Sprintf("%f", actual)
+
+	case bool:
+		body = fmt.Sprintf("%t", actual)
+
+	case []interface{}:
+		b, err := json.Marshal(actual)
+		if err != nil {
+			return err
+		}
+
+		body = string(b)
+
+	case map[string]interface{}:
+		b, err := json.Marshal(actual)
+		if err != nil {
+			return err
+		}
+
+		body = string(b)
+
+	default:
+		return fmt.Errorf("Unexpected body type: %T", actual)
+	}
+
+	b := []byte(dictionary.Apply(body))
 	r.Body = b
 
 	restLog("Request body", b, kind)

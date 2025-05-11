@@ -26,7 +26,7 @@ func TestFile(filename string) (time.Duration, error) {
 		return 0, err
 	}
 
-	b = parser.RemoveComments(b)
+	b = []byte(dictionary.Apply(string(parser.RemoveComments(b))))
 
 	err = json.Unmarshal(b, &test)
 	if err != nil {

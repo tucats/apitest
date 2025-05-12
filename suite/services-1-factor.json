@@ -7,7 +7,6 @@
             "Content-Type": ["application/json"],
             "Accept": ["application/json"]
         },
-        "file": "{{ROOT}}/factor_10.payload"
     },
     "response": {
         "status": 200,

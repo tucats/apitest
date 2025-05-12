@@ -145,7 +145,7 @@ func ExecuteTest(test *defs.Test) error {
 		}
 	}
 
-	// Validate any headers in the response specfiication
+	// Validate any headers in the response specifications.
 	if len(test.Response.Headers) > 0 {
 		if logging.Verbose {
 			fmt.Println("  Validating response headers")

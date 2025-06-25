@@ -61,7 +61,7 @@ func anyArrayElement(body interface{}, parts []string, item string) ([]string, e
 			return result, nil
 		}
 
-		return result, fmt.Errorf("Array elmeent not found: %v", item)
+		return result, fmt.Errorf("Array element not found: %v", item)
 
 	case []string:
 		for _, element := range actual {
@@ -74,7 +74,7 @@ func anyArrayElement(body interface{}, parts []string, item string) ([]string, e
 			return result, nil
 		}
 
-		return nil, fmt.Errorf("Array elmeent not found: %v", item)
+		return nil, fmt.Errorf("Array element not found: %v", item)
 
 	case []float64:
 		for _, element := range actual {
@@ -87,7 +87,7 @@ func anyArrayElement(body interface{}, parts []string, item string) ([]string, e
 			return result, nil
 		}
 
-		return result, fmt.Errorf("Array elmeent not found: %v", item)
+		return result, fmt.Errorf("Array element not found: %v", item)
 
 	case []int:
 		for _, element := range actual {
@@ -100,7 +100,7 @@ func anyArrayElement(body interface{}, parts []string, item string) ([]string, e
 			return result, nil
 		}
 
-		return result, fmt.Errorf("Array elmeent not found: %v", item)
+		return result, fmt.Errorf("Array element not found: %v", item)
 
 	case []bool:
 		for _, element := range actual {
@@ -113,7 +113,7 @@ func anyArrayElement(body interface{}, parts []string, item string) ([]string, e
 			return result, nil
 		}
 
-		return result, fmt.Errorf("Array elmeent not found: %v", item)
+		return result, fmt.Errorf("Array element not found: %v", item)
 
 	default:
 		return result, fmt.Errorf("Item is not an array: %T", item)

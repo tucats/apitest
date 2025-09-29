@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tucats/apitest/formats"
+	"github.com/tucats/apitest/logging"
 	"github.com/tucats/apitest/parser"
 )
 
@@ -61,6 +62,10 @@ func Load(filePath string) error {
 		}
 
 		Dictionary[key] = value
+	}
+
+	if logging.Verbose {
+		fmt.Printf("Loaded %d definitions from %s\n", len(dictionary), filePath)
 	}
 
 	return nil

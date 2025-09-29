@@ -21,8 +21,9 @@ var testsExecuted = 0
 
 func main() {
 	var (
-		err  error
-		path string
+		err      error
+		rootPath string
+		pathList []string
 	)
 
 	now := time.Now()
@@ -39,7 +40,7 @@ func main() {
 	dictionary.Dictionary["PASSWORD"] = "password" // Default testing password
 	dictionary.Dictionary["VERSION"] = BuildVersion
 
-	// Scan over the commadn line arguments to set up the test environment.
+	// Scan over the command line arguments to set up the test environment.
 	for i := 1; i < len(os.Args); i++ {
 		arg := os.Args[i]
 		switch arg {
@@ -60,11 +61,23 @@ func main() {
 				exit("missing argument --path")
 			}
 
-			path = os.Args[i+1]
+			pathList = append(pathList, os.Args[i+1])
 			i++
 
 		case "-r", "--rest":
 			logging.Rest = true
+
+		case "-x", "--dictionary", "--dict":
+			if i+1 >= len(os.Args) {
+				exit("missing argument for --dictionary")
+			}
+
+			err := dictionary.Load(os.Args[i+1])
+			if err != nil {
+				exit("failed to load dictionary: " + err.Error())
+			}
+
+			i++
 
 		case "-d", "--define":
 			if i+1 >= len(os.Args) {
@@ -84,32 +97,39 @@ func main() {
 			logging.Verbose = true
 
 		default:
-			if !strings.HasPrefix(arg, "-") && path == "" {
-				path = arg
+			if !strings.HasPrefix(arg, "-") {
+				pathList = append(pathList, arg)
 			} else {
 				exit("unknown option: " + arg)
 			}
 		}
 	}
 
-	if path == "" {
+	if len(pathList) == 0 {
 		exit("no path specified")
 	}
 
-	rootPath, err := filepath.Abs(filepath.Clean(path))
-	if err != nil {
-		exit("bad path: " + err.Error())
-	}
+	// For all paths provided, run the tests.
+	for _, path := range pathList {
+		rootPath, err = filepath.Abs(filepath.Clean(path))
+		if err != nil {
+			exit("bad path: " + err.Error())
+		}
 
-	dictionary.Dictionary["ROOT"] = rootPath
+		dictionary.Dictionary["ROOT"] = rootPath
 
-	// Run all the tests in the path
-	err = runTests(path)
+		// Run all the tests in the path
+		err = runTests(path)
 
-	if err != nil && strings.Contains(err.Error(), defs.AbortError) {
-		fmt.Printf("Server testing unavailable, %v\n", err)
+		if err != nil {
+			if strings.Contains(err.Error(), defs.AbortError) {
+				fmt.Printf("Server testing unavailable, %v\n", err)
 
-		err = nil
+				err = nil
+			}
+
+			break
+		}
 	}
 
 	if err != nil {

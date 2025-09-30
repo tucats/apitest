@@ -14,12 +14,12 @@ usage: apitest [options] test-path [test-path...]
 
 options:
 
-  -d, --define <key=value>  Define a value for a variable in the test dictionary (can be repeated)
+  -d, --dictionary <file>   Add this dictionary file to the test dictionary
   -f, --filter <string>     Only run tests that contain the given string in their names
   -h, --help                Show this help message and exit
   -r, --rest                Enable REST mode, which makes the server return a JSON response
   -v, --verbose             Enable Verbose output
-  -x, --dictionary <file>   Add this dictionary file to the test dictionary
+  -x, --define <key=value>  Define a value for a variable in the test dictionary (can be repeated)
   
   See the project README.md file for information on the format of test files that are located
   in the test path directory tree.

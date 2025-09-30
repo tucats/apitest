@@ -21,9 +21,10 @@ var testsExecuted = 0
 
 func main() {
 	var (
-		err      error
-		rootPath string
-		pathList []string
+		err            error
+		rootPath       string
+		pathList       []string
+		dictionaryList []string
 	)
 
 	now := time.Now()
@@ -67,19 +68,15 @@ func main() {
 		case "-r", "--rest":
 			logging.Rest = true
 
-		case "-x", "--dictionary", "--dict":
+		case "-d", "--dictionary", "--dict":
 			if i+1 >= len(os.Args) {
 				exit("missing argument for --dictionary")
 			}
 
-			err := dictionary.Load(os.Args[i+1])
-			if err != nil {
-				exit("failed to load dictionary: " + err.Error())
-			}
-
+			dictionaryList = append(dictionaryList, os.Args[i+1])
 			i++
 
-		case "-d", "--define":
+		case "-x", "--set", "--define":
 			if i+1 >= len(os.Args) {
 				exit("missing argument for --define")
 			}
@@ -109,11 +106,19 @@ func main() {
 		exit("no path specified")
 	}
 
+	// Load all dictionaries referenced.
+	for _, path := range dictionaryList {
+		err := dictionary.Load(path)
+		if err != nil {
+			exit("bad dictionary path: " + err.Error())
+		}
+	}
+
 	// For all paths provided, run the tests.
 	for _, path := range pathList {
 		rootPath, err = filepath.Abs(filepath.Clean(path))
 		if err != nil {
-			exit("bad path: " + err.Error())
+			exit("bad test suite path: " + err.Error())
 		}
 
 		dictionary.Dictionary["ROOT"] = rootPath

@@ -10,7 +10,7 @@ the response as well as testing JSON elements of the response body.
 
 ## Command line
 
-The tools can be explicitly built and executed as a command line tool. It can aslo be made
+The tools can be explicitly built and executed as a command line tool. It can also be made
 part of a project file and run by executed using the `go run` command. For example, the too
 might reside in a sub-directory of the tools directory of the project, and the test
 description files are then located in a directory `tests` within the source file directory.
@@ -42,7 +42,7 @@ A dictionary of key-value pairs is maintained during execution of the test. It c
 initially populated using the dictionary.json file in the test directory, or by using
 the `--define` command line option to specify items to add to the dictionary.
 
-In the test defintion, a substititon can be made from the dictionary anywhere in the
+In the test definition, a substitution can be made from the dictionary anywhere in the
 URL endpoint path, the parameter values, or the header values. These are identified
 using `{{key}}` notation, where `key` is the dictionary key. The value in the dictionary
 is substituted in the string with the _then-current_ dictionary value.
@@ -83,7 +83,7 @@ line invocation above for an example of specifying a password of "zork".
 
 ## Test Format
 
-Here is an example test file. Below this is a discussion on the elemnts of the test object.
+Here is an example test file. Below this is a discussion on the elements of the test object.
 
 ```json
 
@@ -91,7 +91,10 @@ Here is an example test file. Below this is a discussion on the elemnts of the t
     "description": "Logon to the local server",
     "request": {
         "method": "POST",
-        "endpoint": "{{SCHEME}}://{{HOST}}/services/admin/logon",
+        "endpoint": "/services/admin/logon",
+        "parameters": {
+            "kind":"auth1"
+        },
         "body": "{ \"username\": \"{{USER}}\", \"{{PASSWORD}}\": \"password\" }",
         "headers": {
             "Content-Type": ["application/json"],
@@ -138,6 +141,17 @@ the test to be run.  It has the following fields:
 | parameters | array | If present, an array of "key":"value" objects which are added as parameters |
 | headers | key:array | If present, an array of key values with an array of string values used as headers |
 
+If the `endpoint` starts with a "/" character, the scheme, host, and port are looked up in
+the dictionary using the keys "SCHEME", "HOST", and "PORT". If the "PORT" dictionary item does
+not exist, then no port is added to the URL and the default for the scheme is assumed. If the
+"HOST" key is not found in the dictionary, the name of the local machine is assumed. If there
+is no "SCHEME" key in the dictionary, "https" is the assumed scheme.
+
+You can prevent the use of defaults by not having th endpoint start with a slash character;
+either specify your own dictionary substitution values or hardcode them into the test as
+appropriate.  If your URL requires a username or username:password in the URL, then you
+must encode them yourself, either as literals in the test or as dictionary items.
+
 ### response object
 
 The `response` object indicates the required status value for the result of the HTTP call,
@@ -173,7 +187,7 @@ on the body of the response. Each has the following fields:
 | name | A descriptive string describing the test, used for logging |
 | expression | a "dot-notation" value describing the value's location in the response body |
 | value | The string value to be tested against the expression object |
-| operation | A string indicating the test type. If missing, "equal" is assuedm |
+| operation | A string indicating the test type. If missing, "equal" is assumed |
 
 The notation for the item to validate is a series of terms separated by "." characters.
 

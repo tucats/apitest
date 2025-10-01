@@ -8,7 +8,7 @@ type RequestObject struct {
 	Endpoint string `json:"endpoint"`
 
 	// Parameters is a map of the key-value parameter pairs that will be added to the URL.
-	Parameters map[string]string `json:"params,omitempty"`
+	Parameters map[string]string `json:"parameters,omitempty"`
 
 	// Headers is a map of the key-value header pairs that will be added to the request. Note
 	// that the values are expressed as an array of string values, since a given header can
@@ -18,7 +18,7 @@ type RequestObject struct {
 	// This is the HTTP method for the request, such as "GET", "POST", "PUT", etc.
 	Method string `json:"method"`
 
-	// If the body of the request (which is assumed to be JSON) is easily exprssed as a string
+	// If the body of the request (which is assumed to be JSON) is easily expressed as a string
 	// it can be in this field. The string must be properly escaped JSON.
 	Body interface{} `json:"body,omitempty"`
 

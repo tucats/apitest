@@ -21,16 +21,39 @@ func ExecuteTest(test *defs.Test) error {
 		kind contentType = unknownContent
 	)
 
-	// Form the URL string
+	// Form the URL string. If the endpoint starts with a slash, assume we should fetch
+	// the default scheme, host, and port and add them to the URL string.
 	urlString := test.Request.Endpoint
 
-	parms := make([]string, 0)
-	for key, value := range test.Request.Parameters {
-		parms = append(parms, fmt.Sprintf("%s=%s", key, value))
+	if strings.HasPrefix(test.Request.Endpoint, "/") {
+		if port := dictionary.Dictionary["PORT"]; port != "" {
+			urlString = ":" + port + urlString
+		}
+
+		if host := dictionary.Dictionary["HOST"]; host != "" {
+			urlString = host + urlString
+		} else {
+			urlString = "localhost" + urlString
+		}
+
+		if scheme := dictionary.Dictionary["SCHEME"]; scheme != "" {
+			urlString = scheme + "://" + urlString
+		} else {
+			urlString = "https://" + urlString
+		}
 	}
 
-	if len(parms) > 0 {
-		urlString += "?" + strings.Join(parms, "&")
+	params := make([]string, 0)
+	for key, value := range test.Request.Parameters {
+		params = append(params, fmt.Sprintf("%s=%s", key, value))
+	}
+
+	if len(params) > 0 {
+		urlString += "?" + strings.Join(params, "&")
+	}
+
+	if logging.Verbose {
+		fmt.Printf("  %s %s\n", test.Request.Method, urlString)
 	}
 
 	// Create an HTTP client

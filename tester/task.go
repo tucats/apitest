@@ -21,6 +21,10 @@ func executeTask(task defs.Task) error {
 
 			name, err = filepath.Abs(filepath.Clean(name))
 			if err != nil {
+				if logging.Verbose {
+					fmt.Printf("  Task: deleting file: %s, err=%v\n", name, err)
+				}
+
 				return err
 			}
 
@@ -30,11 +34,19 @@ func executeTask(task defs.Task) error {
 
 			err = os.Remove(name)
 			if err != nil {
+				if logging.Verbose {
+					fmt.Printf("  Task: deleting file: %s, err=%v\n", name, err)
+				}
+
 				return err
 			}
 		}
 
 	default:
+		if logging.Verbose {
+			fmt.Printf("  Task: %s, unknown task\n", task.Command)
+		}
+
 		err = fmt.Errorf("Unknown task command: %s", task.Command)
 	}
 

@@ -225,6 +225,8 @@ func ExecuteTest(test *defs.Test) error {
 				return err
 			}
 		}
+	} else {
+		fmt.Println("DEBUG: tasks not executed due to previous errors, ", err)
 	}
 
 	return err

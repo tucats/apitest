@@ -35,7 +35,7 @@ type Task struct {
 	Command string `json:"command"`
 
 	// For any command operation that requires additional parameters, these are provided as a list of strings.
-	Parameters []string `json:"params,omitempty"`
+	Parameters []string `json:"parameters,omitempty"`
 }
 
 // Test defines each individual test. This is the object that is stored in each physical test file

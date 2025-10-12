@@ -11,7 +11,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}",
-            "args": ["suite", "-r"]
+            "args": ["suite", "-r", "-v"]
         }
     ]
 }

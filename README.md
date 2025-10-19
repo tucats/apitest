@@ -31,10 +31,17 @@ The command line accepts the following options:
 
 | Option | Value | Description |
 |:-------|:------|:------------|
-| --define, -d | key=value | Add an element to the substitution dictionary |
+| --define, -x | key=value | Add an element to the substitution dictionary |
+| --dictionary, -d | file | Add this dictionary file before running tests |
+| --filter, -f | string | Only run tests whose file name contains the given string |
 | --help, -h |  | display help for the command |
 | --rest, -r |   | If present, display the REST request and response payloads |
-| --Verbose, -v |   | If present, does more Verbose logging of progress |
+| --verbose, -v |   | If present, does more Verbose logging of progress |
+
+Note that you can specify an individual file instead of a directory if you wish
+to run only a single test. This won't look for default dictionary.json files so
+any symbol definitions will need to be done on the command line using the `--define`
+or `--dictionary` options.
 
 ## Dictionary
 

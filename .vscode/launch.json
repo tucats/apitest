@@ -11,7 +11,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}",
-            "args": ["../ego/tools/apitests", "-r", "-v"]
+            "args": ["test.json", "-r", "-v", "-x", "TOKEN_BL=foobar"]
         }
     ]
 }

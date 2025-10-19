@@ -123,8 +123,18 @@ func main() {
 
 		dictionary.Dictionary["ROOT"] = rootPath
 
-		// Run all the tests in the path
-		err = runTests(path)
+		// if the path isn't a dictionary, just run the single test named.
+		info, err := os.Stat(rootPath)
+		if err != nil {
+			exit("bad test suite path: " + err.Error())
+		}
+
+		if !info.IsDir() {
+			err = runSingleTest(rootPath)
+		} else {
+			// Run all the tests in the path
+			err = runTests(path)
+		}
 
 		if err != nil {
 			if strings.Contains(err.Error(), defs.AbortError) {
@@ -149,6 +159,26 @@ func main() {
 func exit(msg string) {
 	fmt.Println("Error: " + msg)
 	os.Exit(1)
+}
+
+func runSingleTest(file string) error {
+	duration, err := TestFile(file)
+
+	pad := ""
+
+	if logging.Verbose {
+		pad = "  "
+	}
+
+	if err != nil {
+		fmt.Printf("%sFAIL       %-40s: %v\n", pad, file, err)
+	} else {
+		fmt.Printf("%sPASS       %-40s %v\n", pad, file, formats.Duration(duration, true))
+	}
+
+	testsExecuted++
+
+	return err
 }
 
 func runTests(path string) error {

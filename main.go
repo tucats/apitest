@@ -13,6 +13,7 @@ import (
 	"github.com/tucats/apitest/dictionary"
 	"github.com/tucats/apitest/formats"
 	"github.com/tucats/apitest/logging"
+	"github.com/tucats/apitest/validate"
 )
 
 var BuildVersion = "developer build"
@@ -29,6 +30,14 @@ func main() {
 
 	now := time.Now()
 
+	// Load data structures into the dictionary.
+	err = validate.Reflect("@test", &defs.Test{})
+	if err != nil {
+		exit(fmt.Sprintf("Error loading @request: %v", err))
+	}
+
+	// Figure out what host we are running on to use as a default
+	// in constructing endpoints.
 	hostname, _ := os.Hostname()
 	if !strings.Contains(hostname, ".") {
 		hostname += ".local"

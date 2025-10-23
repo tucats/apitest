@@ -1,6 +1,9 @@
 package errors
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Error struct {
 	Message    string
@@ -9,11 +12,16 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	if e.Additional == "" {
-		return e.Message
+	more := ""
+	if e.Next != nil {
+		more = e.Next.Error() + ", "
 	}
 
-	return fmt.Sprintf("%s: %v", e.Message, e.Additional)
+	if e.Additional == "" {
+		return more + e.Message
+	}
+
+	return more + fmt.Sprintf("%s: %v", e.Message, e.Additional)
 }
 
 func New(message any) *Error {
@@ -57,7 +65,13 @@ func (e *Error) Context(context any) *Error {
 		return nil
 	}
 
-	e.Additional = fmt.Sprintf("%v", context)
+	switch actual := context.(type) {
+	case []string:
+		e.Additional = strings.Join(actual, ", ")
+
+	default:
+		e.Additional = fmt.Sprintf("%v", context)
+	}
 
 	return e
 }

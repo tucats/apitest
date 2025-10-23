@@ -140,7 +140,7 @@ func reflectOne(name string, tag string, object any) error {
 				item.Type = ObjectType
 				name := "@" + name + "." + strings.ToLower(field.Type.Name())
 
-				v := reflect.ValueOf(object).Field(i).Elem()
+				v := reflect.ValueOf(object).Field(i)
 				err = reflectOne(name, tag, v)
 				tag = ""
 
@@ -341,6 +341,8 @@ func getTag(f reflect.StructField) string {
 	if tag := f.Tag.Get("json"); tag != "" {
 		parts := strings.Split(tag, ",")
 		name = "name=" + strings.TrimSpace(parts[0])
+	} else {
+		name = "name=" + strings.ToLower(f.Name)
 	}
 
 	tag := f.Tag.Get("valid")

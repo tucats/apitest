@@ -124,6 +124,11 @@ func reflectOne(name string, tag string, object any) error {
 
 			kind := field.Type.Kind()
 			switch kind {
+			case reflect.Ptr:
+				pointerValue := reflect.ValueOf(object)
+				value := reflect.Indirect(pointerValue).Interface()
+				err = reflectOne(name, tag, value)
+
 			case reflect.String:
 				item.Type = StringType
 
@@ -140,9 +145,9 @@ func reflectOne(name string, tag string, object any) error {
 				item.Type = ObjectType
 				name := "@" + name + "." + strings.ToLower(field.Type.Name())
 
-				v := reflect.ValueOf(object).Field(i)
-				err = reflectOne(name, tag, v)
-				tag = ""
+				v := reflect.ValueOf(object).Field(i).Interface()
+				err = reflectOne(name, "", v)
+				item.Type = name
 
 			case reflect.Array, reflect.Slice:
 				typeName := field.Type.Name()

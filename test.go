@@ -28,6 +28,13 @@ func TestFile(filename string) (time.Duration, error) {
 
 	b = []byte(dictionary.Apply(string(parser.RemoveComments(b))))
 
+	// Validate the test definition JSON
+	err = validate.Validate(string(b))
+	if err != nil {
+		return 0, fmt.Errorf("test definition validation error: %v", err)
+	}
+
+	// Now unmarshal the JSON into the test structure
 	err = json.Unmarshal(b, &test)
 	if err != nil {
 		return 0, err

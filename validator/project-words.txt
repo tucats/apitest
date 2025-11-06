@@ -1,0 +1,11 @@
+araddon
+casesensitive
+dateparse
+matchcase
+maxlen
+maxlength
+maxvalue
+minlen
+minlength
+minvalue
+tucats

@@ -42,13 +42,13 @@ type Task struct {
 // in the file system, and located using the "path" command line option.
 type Test struct {
 	// The name of the test, used for logging progress.
-	Description string `json:"description"`
+	Description string `json:"description" valid:"required"`
 
 	// The description of the API rest call to make.
-	Request RequestObject `json:"request"`
+	Request RequestObject `json:"request" valid:"required"`
 
 	// The expected response from the rest server.
-	Response ResponseObject `json:"response"`
+	Response ResponseObject `json:"response" valid:"required"`
 
 	// A list of validation tests to perform against the request response body when it is a JSON object.
 	Tests []Validation `json:"tests,omitempty"`

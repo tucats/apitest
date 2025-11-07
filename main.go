@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/tucats/validator"
 	"github.com/tucats/apitest/defs"
 	"github.com/tucats/apitest/dictionary"
 	"github.com/tucats/apitest/formats"
 	"github.com/tucats/apitest/logging"
-	"github.com/tucats/apitest/validator"
 )
 
 var BuildVersion = "developer build"

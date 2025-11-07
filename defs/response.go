@@ -4,11 +4,11 @@ package defs
 type ResponseObject struct {
 	// This is a list of headers that must be present in the response. Note that the header values
 	// are expressed as an array of string values. The header values may appear in any order.
-	Headers map[string][]string `json:"headers"`
+	Headers map[string][]string `json:"headers" validate:"minlen=0"`
 
 	// This is the expected HTTP status code for the response. If the Status value is non-zero, it must
 	// match the actual status code of the rest response.
-	Status int `json:"status" valid:"required,min=200,max=599"`
+	Status int `json:"status" validate:"required,min=200,max=599"`
 
 	// IF present, the body of the response must EXACTLY match this string. This is rarely used in a test
 	// and instead the Test component is used instead to express elements of the expected response when it
